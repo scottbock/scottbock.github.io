@@ -44904,15 +44904,13 @@ angular.module('myApp', [
 
 // our controller for the form
 // =============================================================================
-.controller('formController', ['$scope', '$http', 'DiscountService', function($scope, $http, discountService) {
+.controller('formController', ['$scope', '$http', 'CostService', function($scope, $http, costService) {
 
 	$http.get('json/states.json').success(function(data) { 
     	$scope.states = data;
 	});
 
-	$http.get('json/discounts.json').success(function(data) { 
-    	$scope.discounts = data;
-	});
+	$scope.cost = costService.cost;
 
 	$scope.currentYear = new Date().getFullYear();
 	$scope.administrationWindows = ['Fall', 'Spring'];		
@@ -44994,10 +44992,28 @@ angular.module('myApp', [
 		$scope.formData.summary.summativePaperPrice = 30.50;
 		$scope.formData.summary.periodicPrice = 32.00;
 
+		var summativeOnlineTotalGrades = 0, summativePaperTotalGrades = 0, periodicTotalGrades = 0;
+		angular.forEach(gradeTotals, function(grade, key) {
+			if(grade.summativeOnline > 0){
+				summativeOnlineTotalGrades++;
+			}
+			if(grade.summativePaper > 0) {
+				summativePaperTotalGrades++;
+			}
+			if(grade.periodic > 0){
+				periodicTotalGrades ++;
+			}
+		});
+
 		var discount = {
 			volume: {
-				summativePaper: discountService.getVolumeDiscount(summativePaperTotal),
-				summativeOnline: discountService.getVolumeDiscount(summativeOnlineTotal)
+				summativePaper: costService.getVolumeDiscount(summativePaperTotal),
+				summativeOnline: costService.getVolumeDiscount(summativeOnlineTotal)
+			},
+			multiGrade: {
+				summativePaper: costService.getMultigradeDiscount(summativePaperTotalGrades),
+				summativeOnline: costService.getMultigradeDiscount(summativeOnlineTotalGrades),
+				periodic: costService.getMultigradeDiscount(periodicTotalGrades)
 			}
 		};
 		$scope.formData.summary.discount = discount;
@@ -45093,22 +45109,51 @@ angular.module('myApp', [
 	};    
 }])
 
-.service('DiscountService', function() {
-    this.getVolumeDiscount = function(number, type) {
-    	return 3.5;       
-    };
- 
-    this.getMultiGradeDiscount = function(number, type) {
-    	return 1.5;
-    };
+.factory('CostService', ['$http', function ($http) {
+	var cost = {};
+	$http.get('json/cost.json').success(function(data) { 
+    	cost.pricing = data.pricing;
+    	cost.discounts = data.discounts;
+	});
 
-    this.getPeriodicDiscount = function(summative, periodic){
-    	return 2.5;
-    };
+	var getVolumeDiscount = function(amount){
+		var discountAmount = 0;
+		if(cost.discounts){
+			angular.forEach(cost.discounts.volume, function(discount, key) {
+				if(amount >= discount.min && (!discount.max || amount <= discount.max)){
+					discountAmount = discount.discountPer;
+				}
+			});
+		}
+		return discountAmount;
+	};
 
-    this.getSpecialDiscount = function(couponCode){
-    	return 1.75;
-    };
-});
+	var getMultigradeDiscount = function(amount){
+		var discountAmount = 0;
+		if(cost.discounts){
+			angular.forEach(cost.discounts.multigrade, function(discount, key) {
+				if(amount >= discount.min && (!discount.max || amount <= discount.max)){
+					discountAmount = discount.discountPer;
+				}
+			});
+		}
+		return discountAmount;
+	};
+
+	var getPeriodicDiscount = function(periodicIncluded){
+		var discountAmount = 0;
+		if(periodicIncluded && cost.disounts){
+			discountAmount = cost.discounts.periodic;
+		}
+		return discountAmount;
+	};
+
+	return {
+		'cost':cost,
+		'getVolumeDiscount':getVolumeDiscount,
+		'getMultigradeDiscount':getMultigradeDiscount,
+		'getPeriodicDiscount':getPeriodicDiscount
+	}
+}]);
 
 
