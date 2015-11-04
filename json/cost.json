@@ -21,5 +21,22 @@
 		"periodic":{
 			"discountPer":1.85
 		}
+	},
+	"coupons":{
+		"NOVEMBER5":{
+			"summativeOnline":{"discountPer":5},
+			"summativePaper":{"discountPer":5},
+			"periodic":{"discountPer":5}
+		},
+		"FIRSTORDER":{
+			"summativeOnline":{"discountPer":6},
+			"summativePaper":{"discountPer":6},
+			"periodic":{"discountPer":3}
+		},
+		"WELCOMEBACK":{
+			"summativeOnline":{"discountPer":7},
+			"summativePaper":{"discountPer":2},
+			"periodic":{"discountPer":10}
+		}
 	}
 }
