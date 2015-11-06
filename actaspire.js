@@ -45488,6 +45488,43 @@ angular.module('myApp', [
     "\t\t</tr>\t\t\n" +
     "\t</table>\n" +
     "</div>\n" +
+    "\n" +
+    "<div class=\"panel panel-default\">\n" +
+    "\t<div class=\"panel-heading\">\n" +
+    "\t\tOrder Summary\n" +
+    "\t</div>\n" +
+    "\t<div class=\"panel-body\">\n" +
+    "\t</div>\n" +
+    "\t<table class=\"table table-striped\">\n" +
+    "\t\t<thead>\n" +
+    "\t\t\t<th>Order</th>\n" +
+    "\t\t\t<th>Total Student</th>\n" +
+    "\t\t\t<th>Price</th>\n" +
+    "\t\t\t<th>Extended Price</th>\n" +
+    "\t\t\t<th>Discounts</th>\n" +
+    "\t\t\t<th>Total Discount</th>\n" +
+    "\t\t\t<th>Order Balance</th>\n" +
+    "\t\t</thead>\n" +
+    "\t\t<tbody>\n" +
+    "\t\t\t<tr ng-repeat=\"order in formData.summative.orders\">\n" +
+    "\t\t\t\t<td>{{order.administrationWindow}} {{order.calendarYear}} Summative Order</td>\n" +
+    "\t\t\t\t<td>{{order.onlineTotal}}</td>\n" +
+    "\t\t\t\t<td>{{cost.pricing.summative.online | currency}}</td>\n" +
+    "\t\t\t\t<td>{{order.onlineTotal * cost.pricing.summative.online | currency}}</td>\n" +
+    "\t\t\t\t<td>\n" +
+    "\t\t\t\t\t<div>{{formData.summary.discount.volume.summativeOnline | currency}} (Volume)</div>\n" +
+    "\t\t\t\t\t<div>{{formData.summary.discount.multiGrade.summativeOnline | currency}} (Multi-Grade)</div>\n" +
+    "\t\t\t\t\t<div>{{formData.summary.discount.periodic.summativeOnline | currency}} (Periodic)</div>\n" +
+    "\t\t\t\t\t<div>{{formData.summary.discount.special.summativeOnline.discountPer | currency}} (Special)</div>\n" +
+    "\t\t\t\t\t<hr />\n" +
+    "\t\t\t\t\t<div>{{formData.summary.discount.volume.summativeOnline + formData.summary.discount.multiGrade.summativeOnline + formData.summary.discount.periodic.summativeOnline + formData.summary.discount.special.summativeOnline.discountPer | currency}}</div>\n" +
+    "\t\t\t\t<td>{{(formData.summary.discount.volume.summativeOnline + formData.summary.discount.multiGrade.summativeOnline + formData.summary.discount.periodic.summativeOnline + formData.summary.discount.special.summativeOnline) * order.onlineTotal | currency}}</td>\n" +
+    "\t\t\t\t</td>\n" +
+    "\t\t\t\t<td>{{(formData.summary.summativeOnlinePrice - (formData.summary.discount.volume.summativeOnline + formData.summary.discount.multiGrade.summativeOnline + formData.summary.discount.periodic.summativeOnline + formData.summary.discount.special.summativeOnline)) * order.onlineTotal | currency}}</td>\t\t\t\t\n" +
+    "\t\t\t</tr>\n" +
+    "\t\t</tbody>\n" +
+    "\t</table>\n" +
+    "</div>\n" +
     "\n"
   );
 
